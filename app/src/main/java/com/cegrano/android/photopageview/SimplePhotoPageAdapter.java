@@ -40,15 +40,15 @@ public abstract class SimplePhotoPageAdapter<T> extends BasePhotoPageAdapter {
             return null;
         ViewPropertyAnimator animate = view.animate();
 //        ViewPropertyAnimator curAnimate = getViewAnimation(view, currentPosition, currentPosition);
-        long delay = 1600;
+        long delay = 2000;
 //        if (curAnimate != null)
 //            delay = getViewAnimation(view,currentPosition,currentPosition).getDuration()/10*8;
         Log.d(TAG,"getViewAnimation pos:" + position);
         if (position == currentPosition) {
             animate.alpha(0);
             animate.setDuration(2000);
-        } else if (currentPosition == getItemCount() - 1 && position<currentPosition) {
-            animate = getViewAnimation(view, currentPosition + 1 + position, currentPosition);
+//        } else if (currentPosition == getItemCount() - 1 && position<currentPosition) {
+//            animate = getViewAnimation(view, currentPosition + 1 + position, currentPosition);
         } else if (position == currentPosition + 1) {
             setAnimForOther(view, animate, position,delay);
         } else if (position == currentPosition + 2) {
@@ -59,10 +59,10 @@ public abstract class SimplePhotoPageAdapter<T> extends BasePhotoPageAdapter {
 
     private void setAnimForOther(View view, ViewPropertyAnimator animate, int position, long delay) {
         animate.setStartDelay(delay);
-        float scale = (float) Math.pow(0.9, position);
-        animate.y(DensityUtil.dip2px(view.getContext(), 10 + 30 * scale ) * position);
-        animate.scaleX((float) Math.pow(0.9, position));
-        animate.scaleY((float) Math.pow(0.9,position));
+        float scale = (float) Math.pow(0.9, position-1);
+//        animate.y(DensityUtil.dip2px(view.getContext(), 10 + 30 * scale ) * position);
+        animate.scaleX(scale);
+        animate.scaleY(scale);
         animate.setDuration(1000);
         animate.setStartDelay(delay);
     }
@@ -82,8 +82,8 @@ public abstract class SimplePhotoPageAdapter<T> extends BasePhotoPageAdapter {
         float scale = (float) Math.pow(0.9, position);
         child.setScaleX(scale);
         child.setScaleY(scale);
-        child.setY(DensityUtil.dip2px(child.getContext(), 10 + 30 * scale ) * position);
-        Log.d(TAG,"layout view");
+//        child.setY(DensityUtil.dip2px(child.getContext(), 10 + 30 * scale ) * position);
+        Log.d(TAG,"layout view pos:"+position);
     }
 
     @Override
