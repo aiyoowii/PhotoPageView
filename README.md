@@ -1,11 +1,10 @@
 # PhotoPageView
-轮播的相册
+
 ![image](https://github.com/cegrano/PhotoPageView/raw/master/Screenshot_2016-03-10.png)
 
-数据和动画在adapter里实现；
-给photoPageView set adapter使用；
+set data and animation on a help class whitch extended from BasePhotoPageAdapter；
 
-//例如：
+//simple use as：
 
       PhotoPageView pp = (PhotoPageView) findViewById(R.id.photo_page);
         SimplePhotoPageAdapter<Object> adapter =new SimplePhotoPageAdapter<Object>() {
