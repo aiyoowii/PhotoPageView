@@ -24,7 +24,7 @@ public class PhotoPageView extends FrameLayout {
     private int currentIndex;
     private boolean isLoop = true;
     private boolean touch,cycling;
-    private long delay = 2000;
+    private long delay = 3000;
     private boolean canCycle = true;
 
     public PhotoPageView(Context context) {
@@ -52,17 +52,17 @@ public class PhotoPageView extends FrameLayout {
             int position = mPageAdapter.getViewCount() - i - 1;
             BasePhotoPageAdapter.PhotoPageViewHolder vh =
                     mPageAdapter.onCreateViewHolder(this, mPageAdapter.getItemViewType(position));
-            addView(vh.itemView,new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+            addView(vh.itemView,i,new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             layoutChild(vh.itemView, position);
             mPageAdapter.onBindViewHolder(vh, position);
-            Log.d(TAG,"add view pos:"+position);
+            Log.d(TAG,"add view pos:"+i);
         }
     }
 
     void drawChild(){
-        if (getChildCount()!=mPageAdapter.getViewCount())
-            initChild();
-        else
+//        if (getChildCount()!=mPageAdapter.getViewCount())
+//            initChild();
+//        else
         for (int i= 0;i<getChildCount();i++){
             if (currentIndex>mPageAdapter.getItemCount()-1)
                 currentIndex = mPageAdapter.getItemCount() - mPageAdapter.getViewCount();
@@ -115,18 +115,20 @@ public class PhotoPageView extends FrameLayout {
 
     void doCycle(){
         if (canCycle && !touch && !cycling && getChildCount()>1){
-            final ViewPropertyAnimator an = mPageAdapter.getViewAnimation(getChildAt(0), 0 , 0);
-            an.setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    Log.d(TAG,"animation end");
-                    an.setListener(null);
-                    changePage();
-                    cycling = false;
-                    doCycle();
-                }
-            });
-            postDelayed(mCycleAction,delay);
+//            final ViewPropertyAnimator an = mPageAdapter.getViewAnimation(getChildAt(0), mPageAdapter.getViewCount()-1 , 0);
+//            an.setListener(new AnimatorListenerAdapter() {
+//                @Override
+//                public void onAnimationEnd(Animator animation) {
+//                    Log.d(TAG,"animation end");
+//                    an.setListener(new AnimatorListenerAdapter() {
+//                    });
+//                    changePage();
+//                    cycling = false;
+//                    Log.d(TAG,"do cycle:"+System.currentTimeMillis());
+////                    doCycle();
+//                }
+//            });
+            postDelayed(mCycleAction, delay);
         }
     }
 
@@ -142,17 +144,35 @@ public class PhotoPageView extends FrameLayout {
         };
 
     void cycle(){
-        for (int i = 0;i<getChildCount();i++)
-            mPageAdapter.getViewAnimation(getChildAt(getChildCount() - i -1),i,0).start();
+        for (int i = 0;i<getChildCount();i++) {
+            final ViewPropertyAnimator an = mPageAdapter.getViewAnimation(getChildAt(getChildCount() - i - 1), i, 0);
+            //动画结束，发起下次；得写在这，提前写的话，拿到的不是同一个对象
+            if (i == getChildCount() -1)
+            an.setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d(TAG, "animation end");
+                    an.setListener(new AnimatorListenerAdapter() {
+                    });
+                    changePage();
+                    cycling = false;
+                    Log.d(TAG, "do cycle:" + System.currentTimeMillis());
+                    doCycle();
+                }
+            });
+            an.start();
+        }
     }
 
     //page change
     void changePage(){
         View child = getChildAt(getChildCount() - 1);
         removeView(child);
-        addView(child, 0, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+        addView(child, 0, new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         layoutChild(child, mPageAdapter.getViewCount() - 1);
         currentIndex ++;
+
+        currentIndex%=mPageAdapter.getItemCount();
 
         if (isLoop){
             child.setAlpha(1);
@@ -188,6 +208,7 @@ public class PhotoPageView extends FrameLayout {
         post(new Runnable() {
             @Override
             public void run() {
+                Log.d(TAG,"setAdapter");
                 initChild();
                 if (canCycle)
                     doCycle();

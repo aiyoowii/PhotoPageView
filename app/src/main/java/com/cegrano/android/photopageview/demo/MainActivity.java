@@ -1,14 +1,18 @@
 package com.cegrano.android.photopageview.demo;
 
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cegrano.android.photopageview.BasePhotoPageAdapter;
 import com.cegrano.android.photopageview.PhotoPageView;
@@ -42,12 +46,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(PhotoPageViewHolder holder, int position) {
+                ImageView iv = (ImageView) holder.itemView.findViewById(R.id.img);
                 if (position == 0)
-                    holder.itemView.setBackgroundResource(R.mipmap.img);
+                    iv.setImageResource(R.mipmap.img);
                 else if (position%2 == 0)
-                    holder.itemView.setBackgroundResource(R.color.colorAccent);
+                    iv.setImageResource(R.color.colorAccent);
                 else
-                    holder.itemView.setBackgroundResource(R.color.colorPrimary);
+                    iv.setImageResource(R.color.colorPrimary);
+                ((TextView)holder.itemView.findViewById(R.id.id)).setText(position+"");
             }
         };
         adapter.addData(new Object());
