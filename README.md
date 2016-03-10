@@ -1,6 +1,6 @@
 # PhotoPageView
 轮播的相册
-![image](https://github.com/cegrano/PhotoPageView/raw/master/Screenshot_2016-03-10.png）
+![image](https://github.com/cegrano/PhotoPageView/raw/master/Screenshot_2016-03-10.png)
 
 数据和动画在adapter里实现；
 给photoPageView set adapter使用；
